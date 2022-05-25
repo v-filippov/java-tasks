@@ -38,11 +38,14 @@ public class Parser {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             ValueType valueType = determineValueType(reader, byteArrayOutputStream);
             System.out.println("Value type: " + valueType);
-            if (valueType == ValueType.JSON) {
-                new JsonValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
-            } else if (valueType == ValueType.STRING) {
-                new StringValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
+
+            switch (valueType) {
+                case JSON -> new JsonValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
+                case STRING -> new StringValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
+                case ARRAY -> new ArrayValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
+                default -> throw new UnsupportedOperationException("Unsupported value type: " + valueType);
             }
+
             return byteArrayOutputStream.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             System.err.println(e.getMessage());
