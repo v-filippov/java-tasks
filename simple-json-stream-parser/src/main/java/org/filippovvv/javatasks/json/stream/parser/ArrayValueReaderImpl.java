@@ -2,17 +2,17 @@ package org.filippovvv.javatasks.json.stream.parser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.PushbackReader;
 import java.util.Stack;
 
 public class ArrayValueReaderImpl implements ValueReader {
     @Override
-    public void readRemainingValue(InputStreamReader inputStreamReader, ByteArrayOutputStream byteArrayOutputStream) {
+    public void readRemainingValue(PushbackReader pushbackReader, ByteArrayOutputStream byteArrayOutputStream) {
         int ch = -1;
         Stack<Integer> stack = new Stack<>();
         stack.push(1);
         try {
-            while ((ch = inputStreamReader.read()) != -1 && !stack.isEmpty()) {
+            while ((ch = pushbackReader.read()) != -1 && !stack.isEmpty()) {
                 if ('[' == (char) ch) {
                     stack.push(1);
                 }

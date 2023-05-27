@@ -1,8 +1,8 @@
 package org.filippovvv.javatasks.json.stream.parser;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
+import java.io.PushbackReader;
 
 public interface ValueReader {
-    void readRemainingValue(InputStreamReader inputStreamReader, ByteArrayOutputStream byteArrayOutputStream);
+    void readRemainingValue(PushbackReader pushbackReader, ByteArrayOutputStream byteArrayOutputStream);
 }

@@ -2,6 +2,7 @@
   "id": 1,
   "name": "John",
   "secret": "key",
-  "key":["a", 1, {"inner": "inner value"}],
+  "ke":"abc",
+  "key": 123,
   "label": "key"
 }
