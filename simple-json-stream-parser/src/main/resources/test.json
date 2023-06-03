@@ -4,5 +4,7 @@
   "secret": "key",
   "ke":"abc",
   "key": 123,
-  "label": "key"
+  "label": "text value",
+  "nested" : {"id":  2, "name":  "nested object"},
+  "array": ["abc", "def", "ghi"]
 }

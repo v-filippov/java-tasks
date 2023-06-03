@@ -1,8 +1,14 @@
 package org.filippovvv.javatasks.json.stream.parser;
 
+import org.filippovvv.javatasks.json.stream.parser.model.Result;
+import org.filippovvv.javatasks.json.stream.parser.model.ValueType;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
+
+import static org.filippovvv.javatasks.json.stream.parser.model.ValueType.*;
 
 public class Parser {
     private static final char WHITESPACE = ' ';
@@ -12,8 +18,18 @@ public class Parser {
     private final char DOUBLE_QUOTE = '"';
     private final char COLON = ':';
 
+    private Map<ValueType, ValueReader> readerMap;
+
     public Parser(final InputStream inputStream) {
         this.in = inputStream;
+        initReaders();
+    }
+
+    private void initReaders() {
+        readerMap = Map.of(ValueType.NUMBER, new NumberValueReaderImpl(),
+                ValueType.STRING, new StringValueReaderImpl(),
+                JSON, new JsonValueReaderImpl(),
+                ValueType.ARRAY, new ArrayValueReaderImpl());
     }
 
     /**
@@ -27,7 +43,7 @@ public class Parser {
      * @param key - key to find in JSON documents
      * @return Optional that contains key's value if the key is found.
      */
-    public Optional<String> findByKey(final String key) {
+    public Optional<Result> findByKey(final String key) {
         System.out.println("key: " + key);
         int ch = -1;
         try (PushbackReader reader = new PushbackReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
@@ -36,7 +52,7 @@ public class Parser {
                     System.out.println("The first quote found. Checking whether it's the given key");
                     if (checkStringValueBetweenQuotas(reader, key)) {
                         System.out.println("Key " + key + " found, extracting its value");
-                        final String value = extractKeyValue(reader);
+                        final Result value = extractKeyValue(reader);
                         System.out.println("Key value: " + value);
                         return Optional.of(value);
                     }
@@ -48,21 +64,13 @@ public class Parser {
         return Optional.empty();
     }
 
-    private String extractKeyValue(PushbackReader reader) {
+    private Result extractKeyValue(PushbackReader reader) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             trim(reader);
             ValueType valueType = determineValueType(reader, byteArrayOutputStream);
             System.out.println("Value type: " + valueType);
-
-            switch (valueType) {
-                case JSON -> new JsonValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
-                case STRING -> new StringValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
-                case ARRAY -> new ArrayValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
-                case NUMBER -> new NumberValueReaderImpl().readRemainingValue(reader, byteArrayOutputStream);
-                default -> throw new UnsupportedOperationException("Unsupported value type: " + valueType);
-            }
-
-            return byteArrayOutputStream.toString(StandardCharsets.UTF_8);
+            readerMap.get(valueType).readRemainingValue(reader, byteArrayOutputStream);
+            return new Result(valueType, byteArrayOutputStream.toString(StandardCharsets.UTF_8));
         } catch (IOException e) {
             System.err.println(e.getMessage());
             throw new IllegalStateException("Failed to extract key value: ", e);
@@ -90,7 +98,7 @@ public class Parser {
                 case '"' -> ValueType.STRING;
                 case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> ValueType.NUMBER;
                 case '[' -> ValueType.ARRAY;
-                case '{' -> ValueType.JSON;
+                case '{' -> JSON;
                 default -> throw new IllegalStateException("Failed to examine the first character or key's value. Unexpected character: " + ch);
             };
         } catch (IOException e) {
