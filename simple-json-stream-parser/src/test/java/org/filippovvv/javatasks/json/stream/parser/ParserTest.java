@@ -2,18 +2,15 @@ package org.filippovvv.javatasks.json.stream.parser;
 
 import org.filippovvv.javatasks.json.stream.parser.model.Result;
 import org.filippovvv.javatasks.json.stream.parser.model.ValueType;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.*;
-
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,6 +35,7 @@ public class ParserTest {
 
         // then
         assertTrue(actualResult.isPresent());
+        assertEquals(type, actualResult.get().valueType());
         assertEquals(expectedResult, actualResult.get());
     }
 }
