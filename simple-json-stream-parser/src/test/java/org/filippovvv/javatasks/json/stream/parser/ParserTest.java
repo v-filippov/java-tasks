@@ -28,7 +28,7 @@ public class ParserTest {
     @MethodSource("valuesByKeyProvider")
     public void shouldFindValueByKey(final String key, final ValueType type, final Result expectedResult) throws FileNotFoundException {
         // given
-        InputStream is = new FileInputStream("src/main/resources/test.json");
+        InputStream is = new FileInputStream("src/test/resources/test.json");
         sut = new Parser(is);
         // when
         final Optional<Result> actualResult = sut.findByKey(key);

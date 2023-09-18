@@ -1,7 +1,0 @@
-{
-  "id": 1,
-  "name": "John",
-  "secret": "key",
-  "key":["a", 1, {"inner": "inner value"}],
-  "label": "key"
-}
