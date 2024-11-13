@@ -6,5 +6,6 @@
   "key": 123,
   "label": "text value",
   "nested" : {"id":  2, "name":  "nested object"},
-  "array": ["abc", "def", "ghi"]
+  "array": ["abc", "def", "ghi"],
+  "nestedEmptyObject": {}
 }

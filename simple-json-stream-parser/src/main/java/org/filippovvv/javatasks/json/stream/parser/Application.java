@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class Application {
     public static void main(String[] args) {
-        try (InputStream inputStream = new FileInputStream("src/main/resources/test.json")) {
+        try (InputStream inputStream = new FileInputStream("src/test/resources/test.json")) {
             final Parser parser = new Parser(inputStream);
             final String key = "key";
             final Optional<Result> value = parser.findByKey(key);

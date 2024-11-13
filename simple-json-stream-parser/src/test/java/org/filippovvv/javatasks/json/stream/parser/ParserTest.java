@@ -21,7 +21,8 @@ public class ParserTest {
     public static Stream<Arguments> valuesByKeyProvider() {
         return Stream.of(Arguments.of("key", ValueType.NUMBER, new Result(ValueType.NUMBER, "123")),
                 Arguments.of("nested", ValueType.JSON, new Result(ValueType.JSON, "{\"id\":  2, \"name\":  \"nested object\"}")),
-                Arguments.of("label", ValueType.STRING, new Result(ValueType.STRING, "\"text value\"")));
+                Arguments.of("label", ValueType.STRING, new Result(ValueType.STRING, "\"text value\"")),
+                Arguments.of("nestedEmptyObject", ValueType.JSON, new Result(ValueType.JSON, "{}")));
     }
 
     @ParameterizedTest
